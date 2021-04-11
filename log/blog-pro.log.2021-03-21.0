@@ -1,0 +1,10 @@
+2021-03-21 15:24:04.352  INFO 5944 --- [restartedMain] com.zhoupiyao.blog.BlogApplication       : Starting BlogApplication on LAPTOP-MGBN9DLE with PID 5944 (D:\coding\zp\blog\target\classes started by 周飘 in D:\coding\zp\blog)
+2021-03-21 15:24:04.359  INFO 5944 --- [restartedMain] com.zhoupiyao.blog.BlogApplication       : The following profiles are active: pro
+2021-03-21 15:24:10.891  INFO 5944 --- [restartedMain] com.zhoupiyao.blog.BlogApplication       : Started BlogApplication in 7.257 seconds (JVM running for 8.828)
+2021-03-21 15:24:25.250  WARN 5944 --- [http-nio-8090-exec-4] org.hibernate.orm.deprecation            : HHH90000016: Found use of deprecated 'collection property' syntax in HQL/JPQL query [null.size]; use collection function syntax instead [size(null)].
+2021-03-21 15:24:25.268  WARN 5944 --- [http-nio-8090-exec-4] org.hibernate.orm.deprecation            : HHH90000016: Found use of deprecated 'collection property' syntax in HQL/JPQL query [null.size]; use collection function syntax instead [size(null)].
+2021-03-21 15:33:55.551  INFO 9844 --- [restartedMain] com.zhoupiyao.blog.BlogApplication       : Starting BlogApplication on LAPTOP-MGBN9DLE with PID 9844 (D:\coding\zp\blog\target\classes started by 周飘 in D:\coding\zp\blog)
+2021-03-21 15:33:55.554  INFO 9844 --- [restartedMain] com.zhoupiyao.blog.BlogApplication       : The following profiles are active: pro
+2021-03-21 15:34:02.584  INFO 9844 --- [restartedMain] com.zhoupiyao.blog.BlogApplication       : Started BlogApplication in 7.653 seconds (JVM running for 9.762)
+2021-03-21 15:34:09.920  WARN 9844 --- [http-nio-8090-exec-1] org.hibernate.orm.deprecation            : HHH90000016: Found use of deprecated 'collection property' syntax in HQL/JPQL query [null.size]; use collection function syntax instead [size(null)].
+2021-03-21 15:34:09.937  WARN 9844 --- [http-nio-8090-exec-1] org.hibernate.orm.deprecation            : HHH90000016: Found use of deprecated 'collection property' syntax in HQL/JPQL query [null.size]; use collection function syntax instead [size(null)].

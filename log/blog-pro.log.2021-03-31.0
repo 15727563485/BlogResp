@@ -1,0 +1,5 @@
+2021-03-31 14:16:37.071  INFO 16352 --- [restartedMain] com.zhoupiyao.blog.BlogApplication       : Starting BlogApplication on LAPTOP-MGBN9DLE with PID 16352 (D:\coding\zp\blog\target\classes started by 周飘 in D:\coding\zp\blog)
+2021-03-31 14:16:37.081  INFO 16352 --- [restartedMain] com.zhoupiyao.blog.BlogApplication       : The following profiles are active: pro
+2021-03-31 14:16:48.374  INFO 16352 --- [restartedMain] com.zhoupiyao.blog.BlogApplication       : Started BlogApplication in 12.357 seconds (JVM running for 15.073)
+2021-03-31 14:16:54.753  WARN 16352 --- [http-nio-8090-exec-1] org.hibernate.orm.deprecation            : HHH90000016: Found use of deprecated 'collection property' syntax in HQL/JPQL query [null.size]; use collection function syntax instead [size(null)].
+2021-03-31 14:16:54.777  WARN 16352 --- [http-nio-8090-exec-1] org.hibernate.orm.deprecation            : HHH90000016: Found use of deprecated 'collection property' syntax in HQL/JPQL query [null.size]; use collection function syntax instead [size(null)].
