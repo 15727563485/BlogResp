@@ -8,39 +8,39 @@
     <link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}" >
 </head>
 <body>
-    <!-- 导航栏 -->
-    <nav  class="ui attached inverted segment" th:replace="fragments::menuTop(5)" ></nav>
-   <nav th:replace="fragments::menu(5)" class="ui attached inverted segment">
-       <div class="ui container">
-            <div class="ui inverted secondary stackable menu">
-                <h2 class="ui teal header item m-padding-tb-mini">Zhoupiyao</h2>
-                <a href="/index.html" class="m-item item m-mobile-hide"><i class="home icon"></i> 首页</a>
-                <a href="/types.html" class="m-item item m-mobile-hide"><i class="idea icon"></i> 分类</a>
-                <a href="/tags.html" class="m-item item m-mobile-hide"><i class="tags icon"></i> 标签</a>
-                <a href="/archives.html" class="m-item item m-mobile-hide"><i class="clone icon"></i> 归档</a>
-                <a href="/about.html" class="m-item item m-mobile-hide"><i class="info icon"></i> 关于我</a>
-                <!-- 搜索框 -->
-                <div class="m-item right item m-mobile-hide m-search-margin-top-responsive">
-                    <div class="ui icon inverted transparent input m-padding-lr-small">
-                        <input type="text" placeholder="搜索">
-                        <i class="search link icon"></i>
-                    </div>
+<!-- 导航栏 -->
+<nav class="ui attached inverted segment" th:replace="fragments::menuTop(4)"></nav>
+<nav th:replace="fragments::menu(4)" class="ui attached inverted segment">
+    <div class="ui container">
+        <div class="ui inverted secondary stackable menu">
+            <h2 class="ui teal header item m-padding-tb-mini">Zhoupiyao</h2>
+            <a href="/index.html" class="m-item item m-mobile-hide"><i class="home icon"></i> 首页</a>
+            <a href="/types.html" class="m-item item m-mobile-hide"><i class="idea icon"></i> 分类</a>
+            <a href="/tags.html" class="m-item item m-mobile-hide"><i class="tags icon"></i> 标签</a>
+            <a href="/archives.html" class="m-item item m-mobile-hide"><i class="clone icon"></i> 归档</a>
+            <a href="/about.html" class="m-item item m-mobile-hide"><i class="info icon"></i> 关于我</a>
+            <!-- 搜索框 -->
+            <div class="m-item right item m-mobile-hide m-search-margin-top-responsive">
+                <div class="ui icon inverted transparent input m-padding-lr-small">
+                    <input type="text" placeholder="搜索">
+                    <i class="search link icon"></i>
                 </div>
             </div>
-       </div>
-        <a href="#" class="ui basic black button m-absolute m-top-right m-mobile-show m-paddig-small menu-show-button"
-            style="margin-top: 5px;">
-            <i class="sidebar inverted icon" style="margin:auto ;"></i>
-        </a>
-   </nav>
-   <!-- 主体中间内容 -->
-    <div class="m-padding-tb-large" id="content-position">
-        <div class="ui container">
-            <!-- 头部 -->
-            <div class="ui top inverted attached segment m-padding-tb">
-                <div class="ui middle aligned two column grid">
-                    <div class="column">
-                        <h3 class="ui teal header" >归档</h3>
+        </div>
+    </div>
+    <a href="#" class="ui basic black button m-absolute m-top-right m-mobile-show m-paddig-small menu-show-button"
+       style="margin-top: 5px;">
+        <i class="sidebar inverted icon" style="margin:auto ;"></i>
+    </a>
+</nav>
+<!-- 主体中间内容 -->
+<div class="m-padding-tb-large" id="content-position">
+    <div class="ui container">
+        <!-- 头部 -->
+        <div class="ui top inverted attached segment m-padding-tb">
+            <div class="ui middle aligned two column grid">
+                <div class="column">
+                    <h3 class="ui teal header">归档</h3>
                     </div>
                     <div class="column right aligned">
                         共 <h2 class="ui red header m-text-thin" style="display: inline;" th:text="${blogCounts}"></h2> 篇
