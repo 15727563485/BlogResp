@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<title>登录</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+</head>
+<body style="background: url(http://www.zhoupiyao.ink:8089/img/wallpaper-one/wallhaven-eyvx8l.jpg);
+		background-size: cover;opacity: 0.8">
+	<!--登录块-->
+	<div class="ui basic segment">
+		<div class="ui container" style="margin-top: 140px">
+			<form class="ui form segment m-opacity-mini" id="login_form" method="post" action="#"
+				  th:action="@{/admin/login}" style="width: 38%; margin: auto">
+				<div class="field">
+					<h2 class="ui center aligned header m-padding-tb-mini">博客管理系统登录</h2>
+				</div>
+				<div class="field">
+					<div class="ui left icon input fluid">
+						<i class="ui user blue icon"></i>
+						<input type="text" id="username" name="username" placeholder="用户名">
+					</div>
+				</div>
+				<div class="field">
+					<div class="ui left icon input fluid">
+						<i class="ui lock blue icon"></i>
+						<input type="password" id="password" name="password" placeholder="密码" >
+					</div>
+				</div>
+				<div class="field m-margin-tb">
+					<div class="ui checkbox" style="margin-left: 35%">
+						<input type="checkbox" id="rempwd" name="rempwd"/>
+						<label for="rempwd" >记住密码</label>
+					</div>
+				</div>
+				<div class="field m-margin-tb-small">
+					<button type="submit" id="" class="ui blue fluid button">登录</button>
+				</div>
+				<div class="field">
+					<div class="ui mini error message"></div>
+					<div class="ui mini negative message" th:unless="${#strings.isEmpty(message)}" th:text="${message}">用户名和密码错误</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</body>
+<script th:src="@{/js/jquery-2.1.1.min.js}" src="../static/js/jquery-2.1.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js" ></script>
+<script>
+	$('.ui.form').form({
+		fields: {
+			username: {
+				identifier: 'username',
+				rules: [
+					{
+						type: 'empty',
+						prompt: '请输入用户名！'
+					}
+				]
+			},
+			password: {
+				identifier: 'password',
+				rules: [
+					{
+						type: 'empty',
+						prompt: '请输入密码！'
+					}
+				]
+			}
+		}
+	});
+</script>
+</html>

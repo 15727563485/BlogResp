@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="admin/adminFragments::head(~{::title})">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分类管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../static/css/style.css" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- 一级导航栏 -->
+   <nav th:replace="admin/adminFragments::firstMenu(2)" class="ui attached inverted segment m-padding-tb-tiny">
+       <div class="ui container">
+            <div class="ui inverted secondary stackable menu">
+                <h2 class="ui teal header item m-padding-tb-mini">博客后台管理</h2>
+                <a href="" th:href="@{/admin/adminIndex}" class=" m-item item m-mobile-hide"><i class="home icon"></i> 博客</a>
+                <a href="" th:href="@{/admin/typesControl}" class="active m-item item m-mobile-hide"><i class="idea icon"></i> 分类</a>
+                <a href="" th:href="@{/admin/tagsControl}" class="m-item item m-mobile-hide"><i class="tags icon"></i> 标签</a>
+                <!-- 头像部分 -->
+                <div class="right menu m-padding-tb-mini m-mobile-hide">
+                    <div class="ui dropdown basic black item">
+                        <a href="#">
+                            <img src="../static/images/photo-1612360263279-ab106f58faf9.jpg" th:src="@{/images/photo-1612360263279-ab106f58faf9.jpg}" alt="" class="ui avatar image">
+                            周飘
+                        </a>
+                        <i class="dropdown icon"></i>
+                        <div class="inverted menu">
+                            <a href="" class="item">我的信息</a>
+                            <a href="" class="item">修改密码</a>
+                            <a href="" th:href="@{/admin/logout}" class="item">注销登录</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div>
+       <a href="#" class="ui basic black button m-absolute m-top-right m-mobile-show m-padding-small menu-show-button">
+           <i class="sidebar inverted icon" style="margin:auto ;"></i>
+       </a>
+   </nav>
+    <nav  class="ui teal attached secondary pointing menu" style="background-color: white;">
+        <div class="ui container">
+            <div class="right menu">
+                <a href="#" th:href="@{/admin//typesControl/input}" class="item">分类编辑</a>
+                <a href="#" th:href="@{/admin//typesControl}"  class="active item">分类列表</a>
+            </div>
+        </div>
+    </nav>
+   <!-- 主体中间内容 -->
+    <div class="m-padding-tb-large">
+        <div class="ui container">
+            <!--提示框-->
+            <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+                <i class="ui close icon"></i>
+                <div class="header">提示</div>
+                <p th:text="${message}"></p>
+            </div>
+            <!-- 头 -->
+            <div class="ui top attached segment">
+                <h2 class="ui teal header">分类管理</h2>
+            </div>
+            <!-- 类型 -->
+            <div class="ui teal attached segment m-padding-tb-mini">
+                <table class="ui middle center aligned celled table unstackable">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>类型</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="type,iterStat : ${page.content}">
+                        <td th:text="${iterStat.count}">1</td>
+                        <td th:text="${type.name}">认知升级</td>
+                        <td>
+                            <a href="" class="ui mini blue button" th:href="@{/admin/typesControl/{id}/input(id=${type.id})}" ><i
+                                    class="ui edit icon"></i>编辑</a>
+                            <a href="" th:href="@{/admin/typesControl/delete(id=${type.id})}" class="ui mini red button"><i
+                                    class="ui delete icon"></i>删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <th colspan="6">
+                        <button class="ui teal left floated button" id="addType"><i class="ui add icon"></i>新增</button>
+                        <div class="ui right floated pagination menu" th:if="${page.totalPages>1}">
+                            <a th:href="@{/admin/typesControl(page=${page.number}-1)}" class="ui mini button item"
+                               th:unless="${page.first}">上一页</a>
+                            <a th:href="@{/admin/typesControl(page=${page.number}+1)}" class="ui mini button item"
+                               th:unless="${page.last}">下一页</a>
+                        </div>
+                    </th>
+                    </tfoot>
+                </table>
+                <!--弹出层-->
+                <div class="ui modal form">
+                    <i class="close icon"></i>
+                    <h2 class="ui teal header">
+                        新增分类
+                    </h2>
+                    <div class="content">
+                        <form th:action="@{/admin/typesAdd}" method="post" class="ui form" id="typeInput" >
+                            <div class="field">
+                                <div class="ui left fluid labeled teal input">
+                                    <label class="ui teal basic label">名称</label>
+                                    <input type="text" name="name" placeholder="分类名称">
+                                </div>
+                            </div>
+                            <div class="required field">
+                                <div class="ui error message"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="actions">
+                        <div class="ui gray deny right labeled icon button">
+                            <label>取消</label>
+                            <i class="close icon"></i>
+                        </div>
+                        <button type="button" class="ui positive right labeled icon button" id="submit">
+                            <label>确定</label>
+                            <i class="check icon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+   <script>
+
+       $(".menu-show-button").click(function () {
+           $(".m-item").toggleClass("m-mobile-hide");
+       });
+
+       $('.ui.dropdown').dropdown({
+           on: 'hover',
+       });
+
+       $('.ui.selection.dropdown').dropdown({
+           on: 'click'
+       });
+       $("#addType").click(function () {
+           $('.ui.modal').modal('show');
+       });
+
+       $("#submit").click(function () {
+           $("#typeInput").submit();
+       });
+       $('.ui.form').form({
+           fields: {
+               name: {
+                   identifier: 'name',
+                   rules: [
+                       {
+                           type: 'empty',
+                           prompt: '请输入分类名称！'
+                       }
+                   ]
+               }
+           }
+       });
+       $('.message .close')
+           .on('click', function () {
+               $(this).closest('.message').transition('fade');
+           });
+   </script>
+</body>
+</html>

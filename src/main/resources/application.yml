@@ -1,0 +1,10 @@
+spring:
+  thymeleaf:
+    mode: HTML
+  profiles:
+    active: pro
+  mvc:
+    favicon:
+      enabled: true
+
+comment.avatar: /images/cat.png

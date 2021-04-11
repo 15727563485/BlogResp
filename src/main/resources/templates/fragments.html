@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+    <head th:fragment="head(title)">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <meta charset="UTF-8">
+        <title th:replace="${title}"></title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <link rel="stylesheet" th:href="@{/css/typo.css}" href="../static/css/typo.css">
+        <link rel="stylesheet" th:href="@{/lib/tocbot/tocbot.css}" href="../static/lib/tocbot/tocbot.css">
+        <link rel="stylesheet" th:href="@{/lib/prism/prism.css}" href="../static/lib/prism/prism.css">
+        <link rel="stylesheet" th:href="@{/lib/music/css/zplayer.min.css}" href=" ../static/lib/music/css/zplayer.min.css"/>
+        <link rel="stylesheet" th:href="@{/css/style.css}" href="../static/css/style.css">
+        <link rel="stylesheet" th:href="@{/css/animate.min.css}" href="../static/css/animate.min.css"/>
+        <!-- 音乐播放器 -->
+        <link href="https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.css" rel="stylesheet">
+    </head>
+    <body>
+    <nav class="ui attached inverted segment" id="m-nav-f" th:fragment="menuTop(n)">
+        <div class="ui container">
+            <div class="ui inverted secondary stackable menu">
+                <h2 class="ui teal header item m-padding-tb-mini">Zhoupiyao</h2>
+                <a href="/" th:classappend="${n==1} ? 'active'" class="m-item item m-mobile-hide"><i class="home icon"></i>
+                    首页</a>
+                <a href="/types/-1" th:classappend="${n==2}  ? 'active'" class="m-item item m-mobile-hide"><i
+                        class="idea icon"></i> 分类</a>
+                <a href="/tags/-1" th:classappend="${n==3}  ? 'active'" class="m-item item m-mobile-hide"><i
+                        class="tags icon"></i> 标签</a>
+    <!--            <a href="/music" th:classappend="${n==4} ? 'active'" class="m-item item m-mobile-hide"><i-->
+    <!--                    class="music icon"></i> 音乐盒</a>-->
+                <a href="/archives" th:classappend="${n==5}  ? 'active'" class="m-item item m-mobile-hide"><i
+                        class="clone icon"></i> 归档</a>
+                <a href="/about" th:classappend="${n==6}  ? 'active'" class="m-item item m-mobile-hide"><i
+                        class="info icon"></i> 关于我</a>
+                <!-- 搜索框 -->
+                <form class="m-item right item m-mobile-hide m-search-margin-top-responsive" name="search-form"
+                      th:action="@{/search}" method="get">
+                    <div class="ui icon inverted transparent input m-padding-lr-small">
+                        <input type="text" autocomplete="off" name="queryContent" placeholder="搜索"
+                               th:value="${queryContent}">
+                        <i class="search link icon" onclick="document.forms('search-form').submit()"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <button class="ui basic black button m-absolute m-top-right m-mobile-show m-padding-small menu-show-button"
+                style="margin-top: 5px;">
+            <i class="sidebar inverted icon" style="margin:auto ;"></i>
+        </button>
+    </nav>
+    <nav th:fragment="menu(n)" id="m-nav" class="m-nav" style="display: none">
+        <div class="ui container">
+            <div class="ui inverted secondary stackable menu">
+                <h2 class="ui teal header item m-padding-tb-mini">Zhoupiyao</h2>
+                <a href="/" th:classappend="${n==1} ? 'active'" class="m-item item m-mobile-hide"><i class="home icon"></i>
+                    首页</a>
+                <a href="/types/-1" th:classappend="${n==2}  ? 'active'" class="m-item item m-mobile-hide"><i
+                        class="idea icon"></i> 分类</a>
+                <a href="/tags/-1" th:classappend="${n==3}  ? 'active'" class="m-item item m-mobile-hide"><i
+                        class="tags icon"></i> 标签</a>
+<!--                <a href="/music" th:classappend="${n==4} ? 'active'" class="m-item item m-mobile-hide"><i-->
+<!--                        class="music icon"></i> 音乐盒</a>-->
+                <a href="/archives" th:classappend="${n==5}  ? 'active'" class="m-item item m-mobile-hide"><i
+                        class="clone icon"></i> 归档</a>
+                <a href="/about" th:classappend="${n==6}  ? 'active'" class="m-item item m-mobile-hide"><i
+                        class="info icon"></i> 关于我</a>
+                <!-- 搜索框 -->
+                <form class="m-item right item m-mobile-hide m-search-margin-top-responsive" name="search-form"
+                      th:action="@{/search}" method="get">
+                    <div class="ui icon inverted transparent input m-padding-lr-small">
+                        <input type="text" autocomplete="off" name="queryContent" placeholder="搜索"
+                               th:value="${queryContent}">
+                        <i class="search link icon" onclick="document.forms('search-form').submit()"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <button class="ui basic black button m-absolute m-top-right m-mobile-show m-padding-small menu-show-button"
+                style="margin-top: 5px;">
+            <i class="sidebar inverted icon" style="margin:auto ;"></i>
+        </button>
+    </nav>
+    <footer th:fragment="footer" class="ui inverted vertical segment" style="padding-top: 40px;">
+        <div class="ui center aligned container">
+            <div class="ui inverted divided stackable grid">
+                <div class="three wide column">
+                    <img src="../static/images/wechat.png" th:src="@{/images/wechat.png}" alt=""
+                         class="ui rounded image centered" style="width: 120px;">
+                </div>
+                <div class="three wide column" id="newblog-container">
+                    <div class="ui inverted link list" th:fragment="newblogs">
+                        <h4 class="ui inverted header m-text-spaced m-text-thin">最新博客</h4>
+                        <a th:each="blog : ${recommends}" th:href="@{/{id}/blog(id=${blog.id})}" class="item m-text-lined"
+                           th:text="${blog.title}"></a>
+                    </div>
+                </div>
+
+                <div class="three wide column">
+                    <div class="ui inverted link list">
+                        <h4 class="ui inverted header m-text-spaced m-text-thin">联系我</h4>
+                        <a href="https://mail.qq.com/cgi-bin/frame_html"
+                           class="item m-text-lined">Email：1763388938@qq.com</a>
+                        <a href="#" class="item m-text-lined">QQ:1763388938</a>
+                    </div>
+                </div>
+                <div class="seven wide column">
+                    <h4 class="ui inverted header m-text-spaced m-text-thin ">Zhoupiyao</h4>
+                    <p class="m-text-spaced m-text-thin m-text-lined m-opacity-mini ">
+                        这是我的个人博客，会分享关于编程、写作、思考相关的任何内容，希望可以给来这儿的人带来帮助...</p>
+                </div>
+            </div>
+            <div class="ui inverted section divider"></div>
+            <p class="m-text-thin m-opacity-mini m-text-spaced">&copy;Copyright Zhoupiyao Designed by Zhoupiyao 2021</p>
+        </div>
+    </footer>
+    <div id="miniAplayer" th:fragment="miniAplayer"></div>
+    <th:block th:fragment="script">
+        <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+        <script src="../static/lib/prism/prism.js" th:src="@{/lib/prism/prism.js}"></script>
+        <script src="../static/lib/waypoints/jquery.waypoints.min.js"
+                th:src="@{/lib/waypoints/jquery.waypoints.min.js}"></script>
+        <script src="../static/lib/scrollTo/jquery.scrollTo.min.js"
+                th:src="@{/lib/scrollTo/jquery.scrollTo.min.js}"></script>
+        <script src="../static/lib/tocbot/tocbot.min.js" th:src="@{/lib/tocbot/tocbot.min.js}"></script>
+        <script src="../static/lib/qrcode/qrcode.min.js" th:src="@{/lib/qrcode/qrcode.min.js}"></script>
+        <script src="../static/lib/music/js/zplayer.min.js" th:src="@{/lib/music/js/zplayer.min.js}"></script>
+        <!--卡通人物-->
+        <script type="text/javascript" charset="utf-8"
+                src="https://cdn.jsdelivr.net/npm/live2d-widget@3.0.4/lib/L2Dwidget.min.js"></script>
+        <!--Aplayer播放器-->
+        <script src="https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.js"></script>
+        <!-- 背景动画 -->
+        <script type="text/javascript" color="130, 149, 255" opacity='1' zIndex="-1" count="88"
+                src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>
+        <script>
+            const miniAplayer = new APlayer({
+                container: document.getElementById('miniAplayer'),
+                fixed: true,
+                lrc: false,
+                order: 'random',
+                lrcType: 2,
+                audio: [
+                    {
+                        name:'Baby',
+                        author:'Justin Bieber / Ludacris',
+                        url:'http://music.163.com/song/media/outer/url?id=18638057.mp3',
+                        pic:'http://p1.music.126.net/LXzwFusw-5zfr2krvpVfTQ==/109951165805671525.jpg?param=130y130',
+                        lrc:'[00:00.39]Baby\n' +
+                            '[00:00.52]Justin Bieber\n' +
+                            '[00:01.24]\n' +
+                            '[00:02.44]Oh woah\n' +
+                            '[00:06.06]Oh woah\n' +
+                            '[00:09.76]Oh woah\n' +
+                            '[00:13.30]\n' +
+                            '[00:14.22]You know you love me, I know you care\n' +
+                            '[00:18.04]You shout whenever, and I  ll be there\n' +
+                            '[00:21.77]You want my love, you want my heart\n' +
+                            '[00:25.39]And we will never ever ever be apart\n' +
+                            '[00:29.08]Are we an item? Girl quit playing\n' +
+                            '[00:32.82]We  re just friends, what are you saying\n' +
+                            '[00:36.55]Said there  s another and look right in my eyes\n' +
+                            '[00:40.15]My first love broke my heart for the first time\n' +
+                            '[00:43.54]And I was like\n' +
+                            '[00:44.41]Baby, baby, baby, oh like\n' +
+                            '[00:48.10]Baby, baby, baby, no like\n' +
+                            '[00:51.76]Baby, baby, baby, oh\n' +
+                            '[00:55.46]I thought you  d always been mine, mine\n' +
+                            '[00:59.19]Baby, baby, baby, oh like\n' +
+                            '[01:02.96]Baby, baby, baby, no like\n' +
+                            '[01:06.58]Baby, baby, baby, oh\n' +
+                            '[01:10.27]I thought you  d always been mine, mine\n' +
+                            '[01:13.88]For you, I would have done whatever\n' +
+                            '[01:17.33]And I just can  t believe we ain  t together\n' +
+                            '[01:20.87]And I wanna play it cool, but I  m losing you\n' +
+                            '[01:24.68]I  ll buy you anything, I  ll buy you any ring\n' +
+                            '[01:28.09]And I  m in pieces, baby fix me\n' +
+                            '[01:31.97]And you  ll shake me till you wake me from this bad dream\n' +
+                            '[01:35.47]\n' +
+                            '[01:36.04]I  m going down, down, down, down\n' +
+                            '[01:39.36]And I just can  t believe my first love won  t be around\n' +
+                            '[01:43.02]And I  m now like\n' +
+                            '[01:43.45]Baby, baby, baby, oh like\n' +
+                            '[01:47.14]Baby, baby, baby, no like\n' +
+                            '[01:50.86]Baby, baby, baby, oh\n' +
+                            '[01:54.60]I thought you  d always been mine, mine\n' +
+                            '[01:58.27]Baby, baby, baby, oh like\n' +
+                            '[02:01.99]Baby, baby, baby, no like\n' +
+                            '[02:05.64]Baby, baby, baby, oh\n' +
+                            '[02:09.32]I thought you  d always been mine, mine\n' +
+                            '[02:13.57]When I was 13 I had my first love\n' +
+                            '[02:17.11]There was nobody that compared to my baby\n' +
+                            '[02:18.52]And nobody came between us or could ever come above\n' +
+                            '[02:20.64]She had me going crazy\n' +
+                            '[02:22.78]Oh I was starstruck\n' +
+                            '[02:24.55]She woke me up daily don  t need no starbucks\n' +
+                            '[02:28.35]She made my heart pound\n' +
+                            '[02:30.02]Asking for a beat when I see her in the street\n' +
+                            '[02:31.50]And at school on the playground\n' +
+                            '[02:33.79]But I really wanna see her on the weekend\n' +
+                            '[02:35.58]She knows she got me dazy\n' +
+                            '[02:37.60]Cause she was so amazing\n' +
+                            '[02:39.35]And now my heart is breaking\n' +
+                            '[02:41.24]But I  ll just keep on saying\n' +
+                            '[02:42.83]Baby, baby, baby, oh like\n' +
+                            '[02:46.25]Baby, baby, baby, no like\n' +
+                            '[02:50.07]Baby, baby, baby, oh\n' +
+                            '[02:53.65]I thought you  d always been mine, mine\n' +
+                            '[02:57.46]Baby, baby, baby, oh like\n' +
+                            '[03:01.15]Baby, baby, baby, no like\n' +
+                            '[03:04.79]Baby, baby, baby, oh\n' +
+                            '[03:08.11]\n' +
+                            '[03:08.49]I thought you  d always been mine, mine\n' +
+                            '[03:11.10]Now I  m all gone\n' +
+                            '[03:14.83]Now I  m all gone\n' +
+                            '[03:18.45]Now I  m all gone\n' +
+                            '[03:22.11]Now I  m all gone\n' +
+                            '[03:26.01]I am gone\n' +
+                            '[03:27.46]'
+                    },
+                    {
+                        name: "起风了",
+                        author: "买辣椒也用券",
+                        url: "http://music.163.com/song/media/outer/url?id=1330348068.mp3",
+                        cover: "http://p1.music.126.net/diGAyEmpymX8G7JcnElncQ==/109951163699673355.jpg?param=300y300",
+                        lrc: "[00:00.000] 作曲 : 高橋優\n" +
+                            "[00:00.464] 作词 : 米果\n" +
+                            "[00:01.394] 编曲：池窪浩一 (Kouichi Ikekubo)\n" +
+                            "[00:03.742]\n" +
+                            "[00:26.137] 这一路上走走停停\n" +
+                            "[00:29.192] 顺着少年漂流的痕迹\n" +
+                            "[00:32.281] 迈出车站的前一刻\n" +
+                            "[00:35.395] 竟有些犹豫\n" +
+                            "[00:38.394] 不禁笑这近乡情怯\n" +
+                            "[00:41.791] 仍无可避免\n" +
+                            "[00:44.419] 而长野的天\n" +
+                            "[00:45.734] 依旧那么暖\n" +
+                            "[00:47.284] 风吹起了从前\n" +
+                            "[00:50.053] 从前初识这世间\n" +
+                            "[00:52.785] 万般流连\n" +
+                            "[00:54.562] 看着天边似在眼前\n" +
+                            "[00:57.698] 也甘愿赴汤蹈火去走它一遍\n" +
+                            "[01:02.570] 如今走过这世间\n" +
+                            "[01:05.605] 万般流连\n" +
+                            "[01:07.236] 翻过岁月不同侧脸\n" +
+                            "[01:10.466] 措不及防闯入你的笑颜\n" +
+                            "[01:16.113] 我曾难自拔于世界之大\n" +
+                            "[01:20.207] 也沉溺于其中梦话\n" +
+                            "[01:23.441] 不得真假 不做挣扎 不惧笑话\n" +
+                            "[01:29.101] 我曾将青春翻涌成她\n" +
+                            "[01:32.530] 也曾指尖弹出盛夏\n" +
+                            "[01:35.881] 心之所动 且就随缘去吧\n" +
+                            "[01:42.357] 逆着光行走 任风吹雨打\n" +
+                            "[01:58.630] 短短的路走走停停\n" +
+                            "[02:01.771] 也有了几分的距离\n" +
+                            "[02:04.841] 不知抚摸的是故事 还是段心情\n" +
+                            "[02:11.318] 也许期待的不过是 与时间为敌\n" +
+                            "[02:17.098] 再次看到你\n" +
+                            "[02:18.594] 微凉晨光里\n" +
+                            "[02:20.161] 笑得很甜蜜\n" +
+                            "[02:22.723] 从前初识这世间\n" +
+                            "[02:25.542] 万般流连\n" +
+                            "[02:27.270] 看着天边似在眼前\n" +
+                            "[02:30.220] 也甘愿赴汤蹈火去走它一遍\n" +
+                            "[02:35.313] 如今走过这世间\n" +
+                            "[02:38.262] 万般流连\n" +
+                            "[02:39.991] 翻过岁月不同侧脸\n" +
+                            "[02:42.962] 措不及防闯入你的笑颜\n" +
+                            "[02:48.870] 我曾难自拔于世界之大\n" +
+                            "[02:52.942] 也沉溺于其中梦话\n" +
+                            "[02:56.145] 不得真假 不做挣扎 不惧笑话\n" +
+                            "[03:01.742] 我曾将青春翻涌成她\n" +
+                            "[03:05.839] 也曾指尖弹出盛夏\n" +
+                            "[03:08.669] 心之所动 且就随缘去吧\n" +
+                            "[03:40.529] 晚风吹起你鬓间的白发\n" +
+                            "[03:44.178] 抚平回忆留下的疤\n" +
+                            "[03:47.391] 你的眼中 明暗交杂 一笑生花\n" +
+                            "[03:52.900] 暮色遮住你蹒跚的步伐\n" +
+                            "[03:56.932] 走进床头藏起的画\n" +
+                            "[04:00.146] 画中的你 低着头说话\n" +
+                            "[04:05.680] 我仍感叹于世界之大\n" +
+                            "[04:09.391] 也沉醉于儿时情话\n" +
+                            "[04:12.756] 不剩真假 不做挣扎 无谓笑话\n" +
+                            "[04:18.529] 我终将青春还给了她\n" +
+                            "[04:22.281] 连同指尖弹出的盛夏\n" +
+                            "[04:25.609] 心之所动 就随风去了\n" +
+                            "[04:31.204] 以爱之名 你还愿意吗\n" +
+                            "[04:39.145]\n" +
+                            "[04:39.982] 吉他： 池窪浩一 (Kouichi Ikekubo)\n" +
+                            "[04:40.994] 贝斯：小島剛広 (Takehiro Kojima)\n" +
+                            "[04:41.661] 鼓：吉田佳史 (TRICERATOPS) (Yoshifumi Yoshida(TRICERATOPS))\n" +
+                            "[04:42.463] 键盘：平畑徹也 (Tetsuya Hirahata)\n" +
+                            "[04:43.341] 小提琴：須磨和声 (Wasei Suma)\n" +
+                            "[04:44.211] 弦乐：須磨和声、池窪浩一\n" +
+                            "[04:45.258]\n" +
+                            "[04:46.105] 录音工程：玉乃井光紀 (Mitsunori Tamanoi) - studioFine\n" +
+                            "[04:46.760] 发行公司：Negia Entertainment Inc.\n" +
+                            "[04:47.476] 特别支持：中村光雄(Mitsuo Nakamura)\n" +
+                            "[04:51.019]"
+                    },
+                    {
+                        title : '理想三旬',
+                        pic : 'http://p2.music.126.net/qIJZ6B7jw6nyZMzQhCvtWw==/109951164821687515.jpg?param=130y130',
+                        url : 'http://music.163.com/song/media/outer/url?id=1432542306.mp3',
+                        author: '花柒柒柒',
+                        lrc: "[ti:理想三旬]\n" +
+                            "[ar:陈鸿宇]\n" +
+                            "[al:浓烟下的诗歌电台]\n" +
+                            "[by:]\n" +
+                            "[offset:0]\n" +
+                            "[00:00.07]理想三旬 - 陈鸿宇\n" +
+                            "[00:00.80]词：唐映枫\n" +
+                            "[00:00.97]曲：陈鸿宇\n" +
+                            "[00:01.34]雨后有车驶来\n" +
+                            "[00:04.11]驶过暮色苍白\n" +
+                            "[00:06.39]旧铁皮往南开 恋人已不在\n" +
+                            "[00:11.19]收听浓烟下的 诗歌电台\n" +
+                            "[00:16.00]不动情的咳嗽 至少看起来\n" +
+                            "[00:20.72]归途也还可爱\n" +
+                            "[00:23.17]琴弦少了姿态\n" +
+                            "[00:25.46]再不见那夜里 听歌的小孩\n" +
+                            "[00:30.47]时光匆匆独白\n" +
+                            "[00:32.68]将颠沛磨成卡带\n" +
+                            "[00:35.11]已枯卷的情怀 踏碎成年代\n" +
+                            "[00:40.27]\n" +
+                            "[00:49.47]就老去吧 孤独别醒来\n" +
+                            "[00:54.95]\n" +
+                            "[00:55.61]你渴望的离开\n" +
+                            "[00:59.84]只是无处停摆\n" +
+                            "[01:04.00]就歌唱吧 眼睛眯起来\n" +
+                            "[01:10.16]而热泪的崩坏\n" +
+                            "[01:14.52]只是没抵达的存在\n" +
+                            "[01:18.95]\n" +
+                            "[01:37.39]青春又醉倒在\n" +
+                            "[01:40.14]籍籍无名的怀\n" +
+                            "[01:42.50]靠嬉笑来虚度 聚散得慷慨\n" +
+                            "[01:47.29]辗转却去不到 对的站台\n" +
+                            "[01:52.19]如果漂泊是成长 必经的路牌\n" +
+                            "[01:56.83]你迷醒岁月中\n" +
+                            "[01:59.14]那贫瘠的未来\n" +
+                            "[02:01.72]像遗憾季节里 未结果的爱\n" +
+                            "[02:06.11]弄脏了每一页诗\n" +
+                            "[02:08.61]吻最疼痛的告白\n" +
+                            "[02:11.16]而风声吹到这 已不需要释怀\n" +
+                            "[02:16.02]就老去吧 孤独别醒来\n" +
+                            "[02:20.90]\n" +
+                            "[02:22.17]你渴望的离开\n" +
+                            "[02:26.30]只是无处停摆\n" +
+                            "[02:30.44]就歌唱吧 眼睛眯起来\n" +
+                            "[02:36.30]而热泪的崩坏\n" +
+                            "[02:40.52]只是没抵达的存在\n" +
+                            "[02:47.54]\n" +
+                            "[03:06.32]就甜蜜地忍耐\n" +
+                            "[03:08.76]繁星润湿窗台\n" +
+                            "[03:11.18]光影跳动着像在 困倦里说爱\n" +
+                            "[03:15.98]再无谓的感慨\n" +
+                            "[03:18.65]以为明白\n" +
+                            "[03:20.72]梦倒塌的地方 今已爬满青苔"
+                    },
+                    {
+                        title : '勾指起誓',
+                        pic : 'http://p2.music.126.net/eMyCr0gv0kPGlew9XTNjyA==/109951163944178164.jpg?param=130y130',
+                        url : 'http://music.163.com/song/media/outer/url?id=1345872140.mp3',
+                        author :'洛天依',
+                        lrc: '[00:00.000] 作词 : ilem\n' +
+                            '[00:01.000] 作曲 : ilem\n' +
+                            '[00:03.578]编曲：ilem\n' +
+                            '[00:07.453]\n' +
+                            '[00:22.067]你是信的开头诗的内容\n' +
+                            '[00:25.001]童话的结尾\n' +
+                            '[00:27.190]你是理所当然的奇迹\n' +
+                            '[00:30.390]你是月色真美\n' +
+                            '[00:32.729]你是圣诞老人送给我\n' +
+                            '[00:36.230]好孩子的礼物\n' +
+                            '[00:38.588]你是三千美丽世界里\n' +
+                            '[00:41.711]我的一瓢水\n' +
+                            '[00:43.731]所以让我再靠近一点点\n' +
+                            '[00:47.278]因为你太温暖\n' +
+                            '[00:49.711]我会再变得坚强一点点\n' +
+                            '[00:53.005]因为你太柔软\n' +
+                            '[00:55.326]交换无名指金色的契约\n' +
+                            '[00:58.582]给彼此岁月\n' +
+                            '[01:01.127]说好从今以后都牵着手\n' +
+                            '[01:04.164]因为要走很远\n' +
+                            '[01:19.467]\n' +
+                            '[01:30.083]你是我万水千山的冒险\n' +
+                            '[01:33.017]要找的标记点\n' +
+                            '[01:35.121]你是分割我人生的线\n' +
+                            '[01:38.393]又将它们相连\n' +
+                            '[01:40.677]你是前世千次的回眸\n' +
+                            '[01:44.083]虔诚牵的手\n' +
+                            '[01:46.103]你是其余所有的一切\n' +
+                            '[01:49.364]是我的世界\n' +
+                            '[01:51.838]所以请你再闪亮一点点\n' +
+                            '[01:55.131]尽管我太平凡\n' +
+                            '[01:57.396]我会再变得柔软一点点\n' +
+                            '[02:01.216]因为你太敏感\n' +
+                            '[02:03.123]交换无名指金色的契约\n' +
+                            '[02:06.358]给彼此岁月\n' +
+                            '[02:08.754]说好从今以后都牵着手\n' +
+                            '[02:12.026]不管要走多远\n' +
+                            '[02:14.432]\n' +
+                            '[02:37.560]让我再靠近一点点\n' +
+                            '[02:40.313]因为你太温暖\n' +
+                            '[02:42.519]我会再变得坚强一点点\n' +
+                            '[02:45.986]因为你太柔软\n' +
+                            '[02:48.375]交换无名指金色的契约\n' +
+                            '[02:51.518]给彼此岁月\n' +
+                            '[02:54.054]说好从今以后都牵着手\n' +
+                            '[02:57.278]因为要走很远\n' +
+                            '[02:59.942]\n' +
+                            '[03:00.506]混音：Tolein'
+                    },
+                    {
+                        title : '有理想',
+                        author: '李荣浩',
+                        pic : 'http://p1.music.126.net/UH6mbkyWNd9hRocMk3hd6Q==/109951163240596163.jpg?param=130y130',
+                        url : 'http://music.163.com/song/media/outer/url?id=407450218.mp3',
+                        lrc: '[00:00.00]有理想 - 李荣浩\n' +
+                            '[00:00.75]词：李荣浩\n' +
+                            '[00:00.93]曲：李荣浩\n' +
+                            '[00:32.17]太理智的消费 对不对\n' +
+                            '[00:34.48]成夜不睡\n' +
+                            '[00:35.63]没一句说的对 也很对\n' +
+                            '[00:38.32]这个年岁\n' +
+                            '[00:39.52]有爱的人不追 还斗嘴\n' +
+                            '[00:42.16]显得般配\n' +
+                            '[00:43.38]有时也为自己感到惭愧\n' +
+                            '[00:47.37]穿的也不算贵 黑白灰\n' +
+                            '[00:49.89]尽量自费\n' +
+                            '[00:51.11]被自己往里推 动动嘴\n' +
+                            '[00:53.76]也能后退\n' +
+                            '[00:55.06]总会被动吃亏 不防备\n' +
+                            '[00:57.63]深知有罪\n' +
+                            '[00:58.77]我现在要开始表现伤悲和承认理亏\n' +
+                            '[01:04.04]人文和法规\n' +
+                            '[01:05.74]其实都算是有理想啊\n' +
+                            '[01:10.12]都是废寝食忘啊\n' +
+                            '[01:14.07]有深度有主张啊\n' +
+                            '[01:17.99]难免会累会慌\n' +
+                            '[01:19.92]难免也会迷茫\n' +
+                            '[01:37.96]太理智的消费 对不对\n' +
+                            '[01:40.28]成夜不睡\n' +
+                            '[01:41.49]没一句说的对 也很对\n' +
+                            '[01:44.14]这个年岁\n' +
+                            '[01:45.36]有爱的人不追 还斗嘴\n' +
+                            '[01:48.00]显得般配\n' +
+                            '[01:49.22]有时也为自己感到惭愧\n' +
+                            '[01:53.21]穿的也不算贵 黑白灰\n' +
+                            '[01:55.72]尽量自费\n' +
+                            '[01:57.03]被自己往里推 动动嘴\n' +
+                            '[01:59.57]也能后退\n' +
+                            '[02:00.74]总会被动吃亏 不防备\n' +
+                            '[02:03.47]深知有罪\n' +
+                            '[02:04.72]我现在要开始表现伤悲和承认理亏\n' +
+                            '[02:09.88]人文和法规\n' +
+                            '[02:11.54]其实都算是有理想啊\n' +
+                            '[02:15.95]都是废寝食忘啊\n' +
+                            '[02:19.86]有深度有主张啊\n' +
+                            '[02:23.80]难免会累会慌\n' +
+                            '[02:25.66]难免也会迷茫\n' +
+                            '[02:58.26]其实都算是有理想啊\n' +
+                            '[03:02.37]都是废寝食忘啊\n' +
+                            '[03:06.37]有深度有主张啊\n' +
+                            '[03:10.27]难免会累会慌\n' +
+                            '[03:12.14]难免也会迷茫\n' +
+                            '[03:13.69]其实都算是有理想啊\n' +
+                            '[03:17.85]都是废寝食忘啊\n' +
+                            '[03:21.85]有深度有主张啊\n' +
+                            '[03:25.74]难免会累会慌\n' +
+                            '[03:27.63]难免也会迷茫\n' +
+                            '[03:29.12]其实都算是有理想啊\n' +
+                            '[03:33.25]都是废寝食忘啊\n' +
+                            '[03:37.30]有深度有主张啊\n' +
+                            '[03:41.21]难免会累会慌\n' +
+                            '[03:43.03]难免也会迷茫\n' +
+                            '[03:44.49]其实都算是有理想啊'
+                    },
+                    {
+                        title : '他只是经过',
+                        author: 'h3R3 /高旭',
+                        pic: 'http://p1.music.126.net/wUog39IHoJb76pL0AVCFNQ==/109951165348116023.jpg?param=130y130',
+                        url : 'http://music.163.com/song/media/outer/url?id=1443838552.mp3',
+                        lrc: "[00:00.000] 作曲 : h3R3\n" +
+                            "[00:01.000] 作词 : h3R3\n" +
+                            "[00:03.892]编曲：DIESI\n" +
+                            "[00:09.892]Felix Bennett：\n" +
+                            "[00:10.642]他只是经过 你的 世界 并没有停留\n" +
+                            "[00:20.894]只偶尔听说 谁说 关于他你又会触动\n" +
+                            "[00:31.390]眼泪又滴落 闪动 太多的话都变沉默\n" +
+                            "[00:41.641]你给的问候 温柔 所有都被一笔带过\n" +
+                            "[00:50.641]h3R3：\n" +
+                            "[00:52.393]他曾说的话有没有兑现\n" +
+                            "[00:54.888]他现在又站在谁的对面\n" +
+                            "[00:57.395]谁又让你站在暴雨中的街角淋个整夜\n" +
+                            "[01:02.640]曾陪他逛过的每个路口\n" +
+                            "[01:05.137]为何你停留不走\n" +
+                            "[01:08.146]低头想了很多\n" +
+                            "[01:12.637]每一句goodbye goodnight\n" +
+                            "[01:18.643]慢慢堆叠变成无奈\n" +
+                            "[01:22.888]他给的伤害 还在\n" +
+                            "[01:28.893]变成噩梦你醒不来\n" +
+                            "[01:31.893]Felix Bennett：\n" +
+                            "[01:33.638]他只是经过 你的 世界 并没有停留\n" +
+                            "[01:43.646]只偶尔听说 谁说 关于他你又会触动\n" +
+                            "[01:52.893]h3R3:\n" +
+                            "[01:54.387]对他的思念day by day by day\n" +
+                            "[01:56.893]从他的口中全都变成一句无所谓\n" +
+                            "[01:59.390]为他而学着唱的情歌他早忘了\n" +
+                            "[02:01.637]但是还在你的播放列表里面排到前几位\n" +
+                            "[02:04.393]看他的现状谈了分了又合\n" +
+                            "[02:07.646]谁会在意你呢\n" +
+                            "[02:09.895]他早都忘了这也许对你是种折磨\n" +
+                            "[02:15.388]你所有的所有只剩下他一个\n" +
+                            "[02:20.391]可这种感受有谁能懂\n" +
+                            "[02:24.635]亲密的照片和留言全扔进垃圾桶\n" +
+                            "[02:30.887]谁又会来当你的树洞\n" +
+                            "[02:43.891]Felix Bennett：\n" +
+                            "[02:45.440]他只是经过 你的 世界 并没有停留\n" +
+                            "[02:47.444]只偶尔听说 谁说 关于他你又会触动\n" +
+                            "[02:55.691]眼泪又滴落 闪动 太多的话都变沉默\n" +
+                            "[03:05.941]你给的问候 温柔 所有都被一笔带过\n" +
+                            "[03:16.694]制作人：h3R3\n" +
+                            "[03:17.438]监制：h3R3\n" +
+                            "[03:17.939]和声编写：蔡燏Blazo\n" +
+                            "[03:18.944]和声：蔡燏Blazo\n" +
+                            "[03:18.944]混音：h3R3@1337Studio\n" +
+                            "[03:19.944]母带：h3R3@1337Studio\n" +
+                            "[03:20.944]录音师：刘思达\n" +
+                            "[03:21.944]音频编辑：h3R3@1337Studio\n" +
+                            "[03:22.689]录音棚：1337Studio\n" +
+                            "[03:25.694]出品方： 网易音乐人 x 飓风工作室"
+                    },
+                    {
+                        title : '星辰大海',
+                        pic : 'http://p2.music.126.net/9BgjaSNM9Bmkh5waahv_gQ==/109951165628223126.jpg?param=130y130',
+                        url : 'http://music.163.com/song/media/outer/url?id=1811921555.mp3',
+                        author: '黄霄雲',
+                        lrc: '[ti:星辰大海]\n' +
+                            '[ar:黄霄雲]\n' +
+                            '[al:星辰大海]\n' +
+                            '[by:]\n' +
+                            '[offset:0]\n' +
+                            '[00:00.00]星辰大海 - 黄霄雲\n' +
+                            '[00:00.68]词Lyrics：瞿子千/刘涛/温莨\n' +
+                            '[00:01.61]曲Music：瞿子千/刘涛\n' +
+                            '[00:02.29]编曲Arranger：瞿子千\n' +
+                            '[00:02.80]制作人Produced by：瞿子千/刘涛\n' +
+                            '[00:03.74]吉他Guitar：谭侃侃/瞿子千\n' +
+                            '[00:04.59]弦乐String writing：Maosir\n' +
+                            '[00:05.01]合声Backing vocals：金天/瞿子千/黄霄雲/郭钰菲/陆晶晶\n' +
+                            '[00:06.88]混音师Mixing engineer：刘振东\n' +
+                            '[00:07.56]母带后期混音师Mastering engineer：刘振东\n' +
+                            '[00:08.58]监制Executive producer：陶诗\n' +
+                            '[00:09.09]艺人统筹Artist co ordination：高赫阳/吉娜\n' +
+                            '[00:10.20]录音棚Recording studio：好乐无荒（北京）录音棚\n' +
+                            '[00:11.56]制作公司Manufacturing company：好乐无荒\n' +
+                            '[00:12.41]推广策划Promotion planning：左三好\n' +
+                            '[00:13.17]OP：好乐无荒\n' +
+                            '[00:13.60]SP：好乐无荒\n' +
+                            '[00:14.02]特别鸣谢：梦响强音文化传播（上海）有限公司\n' +
+                            '[00:15.81]我愿变成一颗恒星\n' +
+                            '[00:21.43]守护海底的蜂鸣\n' +
+                            '[00:26.98]It\'s my dream it\'s magic\n' +
+                            '[00:29.61]照亮你的心\n' +
+                            '[00:32.55]To your eyes 有多远的距离\n' +
+                            '[00:38.33]穿过人海 别停下来\n' +
+                            '[00:41.05]趁现在还有期待\n' +
+                            '[00:46.83]会不会我们的爱\n' +
+                            '[00:49.56]会被风吹向大海\n' +
+                            '[00:53.70]不再回来\n' +
+                            '[00:58.28]每当你向我走来\n' +
+                            '[01:01.12]告诉我星辰大海\n' +
+                            '[01:15.51]遥遥微光 与我同行\n' +
+                            '[01:18.22]盛开在黎明\n' +
+                            '[01:21.18]To your eyes 有多远的距离\n' +
+                            '[01:26.84]穿过人海 别停下来\n' +
+                            '[01:29.56]趁现在还有期待\n' +
+                            '[01:35.48]会不会我们的爱\n' +
+                            '[01:38.35]会被风吹向大海\n' +
+                            '[01:42.20]不再回来\n' +
+                            '[01:46.75]每当你向我走来\n' +
+                            '[01:49.54]告诉我星辰大海\n' +
+                            '[02:15.53]趁现在还有期待\n' +
+                            '[02:21.03]会不会我们的爱\n' +
+                            '[02:23.90]会被风吹向大海\n' +
+                            '[02:28.04]不再回来\n' +
+                            '[02:32.52]每当你向我走来\n' +
+                            '[02:35.30]告诉我星辰大海\n' +
+                            '[02:43.95]会不会我们的爱\n' +
+                            '[02:46.77]像星辰守护大海\n' +
+                            '[02:50.87]不曾离开\n' +
+                            '[02:55.32]我向你奔赴而来\n' +
+                            '[02:58.11]你就是星辰大海\n' +
+                            '[03:13.03]我眼中炽热的恒星\n' +
+                            '[03:18.58]长夜里照我前行'
+                    },
+                    {
+                        title : '好想爱这个世界啊 (Live)',
+                        pic : 'http://p1.music.126.net/p7n_zp4eoxY3a1XPzIomHQ==/109951164863688864.jpg?param=130y130',
+                        url : 'http://music.163.com/song/media/outer/url?id=1436910205.mp3',
+                        author: '华晨宇',
+                        lrc: '[00:00.000] 作曲 : 华晨宇\n' +
+                            '[00:00.391] 作词 : 裴育\n' +
+                            '[00:01.173]编曲：郑楠\n' +
+                            '[00:06.032]制作人：郑楠\n' +
+                            '[00:10.316]\n' +
+                            '[00:12.338]抱着沙发 睡眼昏花 凌乱头发\n' +
+                            '[00:16.504]却渴望像电影主角一样潇洒\n' +
+                            '[00:21.753]\n' +
+                            '[00:24.190]屋檐角下 排着乌鸦 密密麻麻\n' +
+                            '[00:28.587]被压抑的情绪不知如何表达\n' +
+                            '[00:34.070]\n' +
+                            '[00:36.274]无论我 在这里 在那里\n' +
+                            '[00:40.341]仿佛失魂的虫鸣\n' +
+                            '[00:42.658]却明白此刻应该做些努力\n' +
+                            '[00:48.024]\n' +
+                            '[00:48.275]无论我 在这里 在那里\n' +
+                            '[00:52.357]不能弥补的过去\n' +
+                            '[00:54.642]每当想起\n' +
+                            '[00:56.390]\n' +
+                            '[00:58.757]想过离开\n' +
+                            '[01:00.725]以这种方式存在\n' +
+                            '[01:03.658]是因为 那些旁白 那些姿态 那些伤害\n' +
+                            '[01:10.408]\n' +
+                            '[01:10.707]不想离开\n' +
+                            '[01:12.458]当你说还有你在\n' +
+                            '[01:15.493]忽然我开始莫名 期待\n' +
+                            '[01:21.191]\n' +
+                            '[01:31.843]夕阳西下 翻着电话 无人拨打\n' +
+                            '[01:36.176]是习惯孤独的我该得到的吧\n' +
+                            '[01:41.543]\n' +
+                            '[01:43.525]独木桥呀 把谁推下 才算赢家\n' +
+                            '[01:48.010]我无声的反抗何时能战胜它\n' +
+                            '[01:53.542]\n' +
+                            '[01:55.826]无论我 在这里 在那里\n' +
+                            '[01:59.793]仿佛失魂的虫鸣\n' +
+                            '[02:02.193]却明白此刻应该做些努力\n' +
+                            '[02:07.359]\n' +
+                            '[02:07.776]无论我 在这里 在那里\n' +
+                            '[02:11.692]不能弥补的过去\n' +
+                            '[02:14.177]每当想起\n' +
+                            '[02:18.092]\n' +
+                            '[02:18.259]想过离开\n' +
+                            '[02:19.926]以这种方式存在\n' +
+                            '[02:22.959]是因为 那些旁白 那些姿态 那些伤害\n' +
+                            '[02:29.909]\n' +
+                            '[02:30.160]不想离开\n' +
+                            '[02:31.809]也许尝试过被爱\n' +
+                            '[02:34.843]会开始仰望未来\n' +
+                            '[02:38.859]伤疤 就丢给回忆吧\n' +
+                            '[02:50.798]放下 才得到更好啊\n' +
+                            '[02:58.322]别怕 别怕\n' +
+                            '[03:02.239]\n' +
+                            '[03:03.122]想过离开\n' +
+                            '[03:04.806]当阳光败给阴霾\n' +
+                            '[03:07.838]没想到你会拼命为我拨开\n' +
+                            '[03:13.506]\n' +
+                            '[03:20.839]曾想过离开\n' +
+                            '[03:23.273]却又坚持到现在\n' +
+                            '[03:25.922]熬过了 那些旁白 那些姿态 那些伤害\n' +
+                            '[03:32.922]\n' +
+                            '[03:33.139]不想离开\n' +
+                            '[03:34.872]当你的笑容绽开\n' +
+                            '[03:37.840]这世界突然填满 色彩\n' +
+                            '[03:48.239]\n' +
+                            '[04:04.639]抱着沙发 睡眼昏花 凌乱头发\n' +
+                            '[04:10.740]夕阳西下 接通电话 是你呀'
+                    },
+                    {
+                        title : '天外来物',
+                        pic : 'http://p1.music.126.net/jOrfzq4tB9ENWQVWLhi3Ag==/109951165591010361.jpg?param=130y130',
+                        url : 'http://music.163.com/song/media/outer/url?id=1463165983.mp3',
+                        author: '薛之谦',
+                        lrc: '00:00.000] 作词 : 薛之谦\n' +
+                            '[00:01.000] 作曲 : 罗小黑\n' +
+                            '[00:18.342]你降落的 太突然了\n' +
+                            '[00:24.540]我刚好呢 又路过了\n' +
+                            '[00:32.625]机会难得 又主观觉得\n' +
+                            '[00:39.025]想明抢 又碰不得\n' +
+                            '[00:46.457]你带来了 我的快乐\n' +
+                            '[00:53.457]让这世界 有点颜色\n' +
+                            '[01:00.744]我好想指责 你太随意了\n' +
+                            '[01:07.291]宝物该有人捧着 你是不是我的\n' +
+                            '[01:17.633]你像 天外来物一样 求之不得\n' +
+                            '[01:24.569]你在世俗里的名字 不重要了\n' +
+                            '[01:31.816]正好 我隐藏的人格是契而不舍\n' +
+                            '[01:38.599]直到蜂拥而至的人都透明了\n' +
+                            '[01:46.243]我在 不近又不远处\n' +
+                            '[01:50.225]用明天换你 靠近我\n' +
+                            '[02:07.854]你占领了 我的快乐\n' +
+                            '[02:14.706]和这世界 已没有瓜葛\n' +
+                            '[02:21.940]任事物干渴 都褪去颜色\n' +
+                            '[02:28.640]只有你是天蓝色 我开始找你了\n' +
+                            '[02:40.870]会像 天外来物一样 失而复得\n' +
+                            '[02:48.069]你在世俗里的名字 被人用了\n' +
+                            '[02:54.962]反正 我隐藏的人格是契而不舍\n' +
+                            '[03:02.031]直到蜂拥而至的人都透明了\n' +
+                            '[03:09.093]我在 不近又不远处\n' +
+                            '[03:12.951]用明天换你 靠近我\n' +
+                            '[03:19.066]你就像 天外来物一样 求之不得\n' +
+                            '[03:27.017]我在世俗里的描写被取笑了\n' +
+                            '[03:33.981]反正我隐藏的人格是非你不可\n' +
+                            '[03:40.652]直到别有用心的人都透明了\n' +
+                            '[03:48.196]我在 不近又不远处\n' +
+                            '[03:52.344]用明天换你 靠近我\n' +
+                            '[03:58.783]制作人：周以力 郑伟\n' +
+                            '[03:59.167]编曲：周以力\n' +
+                            '[03:59.534]吉他：张淞\n' +
+                            '[03:59.816]大提琴：郎莹\n' +
+                            '[04:00.081]鼓：褚伟明\n' +
+                            '[04:00.333]bass：努而德柯\n' +
+                            '[04:00.596]人声录制：郑伟 夏之炜 吴身宝\n' +
+                            '[04:00.834]人声编辑：郑伟\n' +
+                            '[04:01.058]人声录音棚：上海广播大厦200studio\n' +
+                            '[04:01.313]乐器录音棚：soundhub studio\n' +
+                            '[04:01.613]混音：全相彦 @OK master studio\n' +
+                            '[04:01.832]母带：全相彦 @OK master studio'
+                    },
+                    {
+                        title : '努力工作吧',
+                        pic : 'http://p2.music.126.net/me4IQ0mkD19oDZABv8OfEw==/109951165520524853.jpg?param=130y130',
+                        url : 'http://music.163.com/song/media/outer/url?id=1500788926.mp3',
+                        author: '赛文&GOD',
+                        lrc : '[00:00.000] 作词 : 赛文&GOD/泽蛋\n' +
+                            '[00:01.000] 作曲 : 赛文&GOD/徐深\n' +
+                            '[00:02.000] 编曲 : 曾吴秋杰\n' +
+                            '[00:09.343]编曲：GC/曾吴秋杰/邵钜富\n' +
+                            '[00:13.089]OP：深声文化*乐町文化\n' +
+                            '[00:14.097]出品：网易音乐人*飓风工作室\n' +
+                            '[00:15.089]\n' +
+                            '[00:16.047]工作 太多没有时间太忙\n' +
+                            '[00:18.801]就算烦恼再多我也很快乐\n' +
+                            '[00:21.053]生活 只是为了金钱到处忙碌奔波 挣脱\n' +
+                            '[00:24.803]想你能够快乐\n' +
+                            '[00:26.556]你能够快乐\n' +
+                            '[00:28.540]你能够快乐\n' +
+                            '[00:30.552]\n' +
+                            '[00:31.308]像是你们每天这么努力看到我们这么有出息为了母亲\n' +
+                            '[00:35.294]坚持自己的想法都对\n' +
+                            '[00:37.305]工作不分低贱高贵\n' +
+                            '[00:39.294]相信自己的力量\n' +
+                            '[00:41.303]相信自己的力量\n' +
+                            '[00:43.308]相信自己的力量\n' +
+                            '[00:45.266]\n' +
+                            '[00:46.022]学会\n' +
+                            '[00:48.214]去把胡扯的标准打碎\n' +
+                            '[00:51.953]键盘敲击的不予理会\n' +
+                            '[00:55.466]坚持做自己就对\n' +
+                            '[00:59.220]其他都无所谓\n' +
+                            '[01:01.448]Oh yeah\n' +
+                            '[01:03.201]Baby偶尔你也会累\n' +
+                            '[01:06.963]但别忘记还有梦相随\n' +
+                            '[01:10.704]We\'re always on the way\n' +
+                            '[01:16.205]\n' +
+                            '[01:16.718]失落 偶尔也有困惑也多\n' +
+                            '[01:19.214]就算受过挫折我也很洒脱\n' +
+                            '[01:21.451]堕落 只是以为能够掩饰自己多弱 oh no\n' +
+                            '[01:25.203]想你能够振作\n' +
+                            '[01:27.209]想你能够振作\n' +
+                            '[01:29.211]想你能够振作\n' +
+                            '[01:31.461]\n' +
+                            '[01:31.970]像是你们每天看到我们有人被骂 but I don\'t give a sh*t\n' +
+                            '[01:35.455]相信自己的存在可贵\n' +
+                            '[01:37.217]工作不分低贱高贵\n' +
+                            '[01:39.720]相信自己的力量\n' +
+                            '[01:41.705]相信自己的力量\n' +
+                            '[01:43.712]相信自己的力量\n' +
+                            '[01:45.953]\n' +
+                            '[01:46.950]不管我怎样去表现 他们还是讨厌\n' +
+                            '[01:50.464]不管我怎样去解释 他们还是抵制\n' +
+                            '[01:54.217]不如就算了吧\n' +
+                            '[01:55.967]不如就算了吧\n' +
+                            '[01:57.955]不如就算了 算了吧\n' +
+                            '[02:00.459]\n' +
+                            '[02:01.953]学会\n' +
+                            '[02:03.716]去把胡扯的标准打碎\n' +
+                            '[02:07.453]键盘敲击的不予理会\n' +
+                            '[02:10.969]坚持做你自己就对 不做谁\n' +
+                            '[02:16.206]Hey babe\n' +
+                            '[02:17.220]我知道偶尔你也会累\n' +
+                            '[02:22.419]但别忘记还有梦相随\n' +
+                            '[02:26.171]我要未来自己彩绘\n' +
+                            '[02:31.173]\n' +
+                            '[02:32.188]我还年轻我有野心\n' +
+                            '[02:34.422]他们说时光不能浪费\n' +
+                            '[02:36.435]可我现在十八岁\n' +
+                            '[02:38.172]有无数的机会\n' +
+                            '[02:40.170]平平波波的是日夜\n' +
+                            '[02:42.176]就算出错 从头来又如何\n' +
+                            '[02:50.072]（此作品Beat经过原编曲者本人授权）\n' +
+                            '[02:50.172]\n' +
+                            '[02:50.672]制作人：徐深\n' +
+                            '[02:51.155]和声：曾吴秋杰\n' +
+                            '[02:51.672]吉他/贝斯：邵钜富\n' +
+                            '[02:51.935]混音/母带：曾吴秋杰\n' +
+                            '[02:52.426]企划：何泽镔/余祖意\n' +
+                            '[02:52.928]统筹：吴桦/泽蛋'
+                    },
+                    {
+                        title: "只要平凡",
+                        author: "张杰/张碧晨",
+                        url: "http://music.163.com/song/media/outer/url?id=574919767.mp3",
+                        pic: "http://p1.music.126.net/CjGoliP3xOB0gcCUaeTTBg==/109951163375727336.jpg?param=300x300",
+                        lrc: "[ti:只要平凡]\n" +
+                            "[ar:张杰/张碧晨]\n" +
+                            "[al:只要平凡]\n" +
+                            "[by:天龙888]\n" +
+                            "\n" +
+                            "[00:00.00]只要平凡 - 张杰/张碧晨\n" +
+                            "[00:01.00]\n" +
+                            "[00:02.54]电影《我不是药神》主题曲\n" +
+                            "[00:03.00]作词：格格\n" +
+                            "[00:03.50]作曲：黄超\n" +
+                            "[00:04.39]\n" +
+                            "[00:04.86]也许很远或是昨天\n" +
+                            "[00:08.56]在这里或在对岸\n" +
+                            "[00:12.48]长路辗转离合悲欢\n" +
+                            "[00:16.67]人聚又人散\n" +
+                            "[00:20.62]放过对错才知答案\n" +
+                            "[00:25.14]活着的勇敢\n" +
+                            "[00:28.75]没有神的光环\n" +
+                            "[00:33.19]你我生而平凡\n" +
+                            "[00:36.51]\n" +
+                            "[00:37.89]在心碎中认清遗憾\n" +
+                            "[00:41.55]生命漫长也短暂\n" +
+                            "[00:45.40]跳动心脏长出藤蔓\n" +
+                            "[00:49.60]愿为险而战\n" +
+                            "[00:53.49]跌入灰暗坠入深渊\n" +
+                            "[00:58.04]沾满泥土的脸\n" +
+                            "[01:01.88]没有神的光环\n" +
+                            "[01:06.22]握紧手中的平凡\n" +
+                            "[01:10.18]此心此生无憾\n" +
+                            "[01:14.66]生命的火已点燃\n" +
+                            "[01:17.66]\n" +
+                            "[01:19.10]有一天也许会走远\n" +
+                            "[01:24.77]也许还能再相见\n" +
+                            "[01:28.82]无论在人群在天边\n" +
+                            "[01:33.23]让我再看清你的脸\n" +
+                            "[01:37.00]任泪水铺满了双眼\n" +
+                            "[01:42.01]虽无言泪满面\n" +
+                            "[01:45.79]不要神的光环\n" +
+                            "[01:49.72]只要你的平凡\n" +
+                            "[01:53.40]\n" +
+                            "[01:54.79]音乐制作人：黄超\n" +
+                            "[01:55.41]编曲：黄超\n" +
+                            "[01:56.26]吉他：黄超\n" +
+                            "[01:57.01]单簧管：刘峤\n" +
+                            "[01:57.82]和音编写：黄超\n" +
+                            "[01:58.57]和音演唱：张杰 张碧晨\n" +
+                            "[01:59.31]人声录音师：汝文博 ,朱玉婷\n" +
+                            "[02:00.05]录音工作室：BIG.J Studio,香蕉计划录音棚\n" +
+                            "[02:00.71]混音师：周天澈\n" +
+                            "[02:01.36]母带工程师：周天澈\n" +
+                            "[02:02.05]母带工作室：TC Faders\n" +
+                            "[02:02.73]\n" +
+                            "[02:39.88]在心碎中认清遗憾\n" +
+                            "[02:43.57]生命漫长也短暂\n" +
+                            "[02:48.05]跳动心脏长出藤蔓\n" +
+                            "[02:51.85]愿为险而战\n" +
+                            "[02:56.06]跌入灰暗坠入深渊\n" +
+                            "[02:59.98]沾满泥土的脸\n" +
+                            "[03:03.86]没有神的光环\n" +
+                            "[03:08.28]握紧手中的平凡\n" +
+                            "[03:11.85]\n" +
+                            "[03:12.79]有一天也许会走远\n" +
+                            "[03:16.57]也许还能再相见\n" +
+                            "[03:20.54]无论在人群在天边\n" +
+                            "[03:24.84]让我再看清你的脸\n" +
+                            "[03:29.01]任泪水铺满了双眼\n" +
+                            "[03:33.22]虽无言泪满面\n" +
+                            "[03:37.01]不要神的光环\n" +
+                            "[03:41.59]只要你的平凡\n" +
+                            "[03:45.78]此心此生无憾\n" +
+                            "[03:49.64]生命的火已点燃\n" +
+                            "[03:52.88]\n" +
+                            "[03:53.55]lrc歌词编辑：天龙 QQ：26092798"
+                    },
+                    {
+                        title: "云烟成雨",
+                        author: "房东的猫",
+                        url: "http://music.163.com/song/media/outer/url?id=513360721.mp3",
+                        pic: "http://p1.music.126.net/DSTg1dR7yKsyGq4IK3NL8A==/109951163046050093.jpg?param=300x300",
+                        lrc: "[00:00] 作曲 : 少年佩\n[00:01] 作词 : 墨鱼丝\n[00:11]制作人：黎偌天\n[00:12]编曲：黎偌天\n[00:13]监制：李纤橙\n[00:14]\n[00:18]你的晚安 是下意识的恻隐\n[00:24]我留至夜深 治疗失眠梦呓\n[00:30]那封手写信 留在行李箱底\n[00:36]来不及 赋予它旅途的意义\n[00:43]若一切 都已云烟成雨\n[00:49]我能否 变成淤泥\n[00:52]再一次 沾染你\n[00:55]若生命 如过场电影\n[01:01]Oh让我再一次 甜梦里惊醒\n[01:13]我多想再见你\n[01:15]哪怕匆匆一眼就别离\n[01:19]路灯下昏黄的剪影\n[01:22]越走越漫长的林径\n[01:25]我多想再见你\n[01:28]至少玩笑话还能说起\n[01:32]街巷初次落叶的秋分\n[01:35]渐行渐远去的我们\n[01:53]若一切 都已云烟成雨\n[01:59]我能否 变成淤泥\n[02:01]再一次 沾染你\n[02:05]若生命 如过场电影\n[02:10]Oh让我再一次 甜梦里惊醒\n[02:19]我多想再见你\n[02:21]哪怕匆匆一眼就别离\n[02:26]路灯下昏黄的剪影\n[02:28]越走越漫长的林径\n[02:32]我多想再见你\n[02:34]至少玩笑话还能说起\n[02:38]街巷初次落叶的秋分\n[02:41]渐行渐远去的我们\n[02:49]站台 汽笛响起\n[02:52]想念是你的声音\n[02:55]我们提着过去 走入人群\n[03:02]寻找着一个位置 安放自己\n[03:13]我多想再见你\n[03:15]哪怕匆匆一眼就别离\n[03:19]路灯下昏黄的剪影\n[03:22]越走越漫长的林径\n[03:25]我多想再见你\n[03:28]至少玩笑话还能说起\n[03:31]街巷初次落叶的秋分\n[03:35]渐行渐远去的我们\n[03:41]\n[03:43]主唱：红鼻子小黑\n[03:44]制作人：黎偌天\n[03:46]监制：李纤橙\n"
+                    },
+                    {
+                        title: "夜空中最亮的星",
+                        author: "逃跑计划",
+                        url: "http://music.163.com/song/media/outer/url?id=25706282.mp3",
+                        pic: "http://p1.music.126.net/d541jx7SqoDzVkenhmtg6g==/19193074974743620.jpg?param=300y300",
+                        lrc: "[00:00.000] 作曲 : 逃跑计划\n" +
+                            "[00:00.226] 作词 : 逃跑计划\n" +
+                            "[00:00.680]编曲：Giles Tully / 李赤\n" +
+                            "[00:01.680]制作人：Giles Tully / 李赤\n" +
+                            "[00:02.680]缩混：Giles Tully / Patrick Weyer-Brown / 姜北生\n" +
+                            "[00:03.680]Patrick Weyer-Brown & Giles Tully\n" +
+                            "[00:04.680]Acoustic Guitar\n" +
+                            "[00:05.680](Patrick Weyer-Brown & Giles Tully)\n" +
+                            "[00:06.680]其他录音：时俊峰 福达录音棚 / 姜北生 环球唱片录音棚 \n" +
+                            "[00:07.680]人声和声：逃跑计划\n" +
+                            "[00:08.680]女声和声：孙亮亮\n" +
+                            "[00:09.680]弦乐制作：朱金泰\n" +
+                            "[00:10.680]弦乐编写：朱金泰 / 陈迪\n" +
+                            "[00:11.680]弦乐：中国国家交响乐团\n" +
+                            "[00:12.680]首席小提琴：董智敏\n" +
+                            "[00:13.680]录音棚：有沐录音棚 YUM Studio\n" +
+                            "[00:14.680]弦乐录音：杨杰、郑昊杰\n" +
+                            "[00:15.680]制作助理：哈斯瑚必来\n" +
+                            "[00:16.680]母带处理：Patrick Weyer-Brown (FR) 法国SAE Paris 录音棚\n" +
+                            "[00:17.680]夜空中最亮的星 能否听清\n" +
+                            "[00:26.230] 那仰望的人 心底的孤独和叹息\n" +
+                            "[00:35.650] 夜空中最亮的星 能否记起\n" +
+                            "[00:44.210] 曾与我同行 消失在风里的身影\n" +
+                            "[00:52.540] 我祈祷拥有一颗透明的心灵\n" +
+                            "[00:57.640]和会流泪的眼睛\n" +
+                            "[01:01.880] 给我再去相信的勇气\n" +
+                            "[01:06.400]越过谎言去拥抱你\n" +
+                            "[01:10.420] 每当我找不到存在的意义\n" +
+                            "[01:15.300] 每当我迷失在黑夜里\n" +
+                            "[01:20.160] 夜空中最亮的星\n" +
+                            "[01:24.270] 请指引我靠近你\n" +
+                            "[01:37.880]夜空中最亮的星 是否知道\n" +
+                            "[01:46.450] 曾与我同行的身影 如今在哪里\n" +
+                            "[01:55.450] 夜空中最亮的星 是否在意\n" +
+                            "[02:03.950] 是等太阳升起 还是意外先来临\n" +
+                            "[02:12.370] 我宁愿所有痛苦都留在心里\n" +
+                            "[02:17.690] 也不愿忘记你的眼睛\n" +
+                            "[02:22.270] 给我再去相信的勇气\n" +
+                            "[02:26.400] 越过谎言去拥抱你\n" +
+                            "[02:30.350] 每当我找不到存在的意义\n" +
+                            "[02:35.270] 每当我迷失在黑夜里\n" +
+                            "[02:40.720] 夜空中最亮的星 请照亮我前行\n" +
+                            "[03:05.420]我祈祷拥有一颗透明的心灵\n" +
+                            "[03:10.870]和会流泪的眼睛\n" +
+                            "[03:15.930] 给我再去相信的勇气\n" +
+                            "[03:19.660]越过谎言去拥抱你\n" +
+                            "[03:23.600] 每当我找不到存在的意义\n" +
+                            "[03:28.760] 每当我迷失在黑夜里\n" +
+                            "[03:33.540] 夜空中最亮的星\n" +
+                            "[03:37.590]请照亮我前行\n" +
+                            "[03:50.890]夜空中最亮的星 能否听清\n" +
+                            "[03:59.810]那仰望的人 心底的孤独和叹息"
+                    },
+                ]
+            });
+
+
+            //手机端菜单显示按钮
+            $(".menu-show-button").click(function () {
+                $(".m-item").toggleClass("m-mobile-hide");
+            });
+            //卡通人物
+            // L2Dwidget.init({
+            //     "model": {
+            //         jsonPath: "https://unpkg.com/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json", // 卡通模型
+            //         "scale": 2
+            //     },
+            //     "display": {
+            //         "position": "right", // 定位位置（"left"/"right"/"top"/"bottom"）
+            //         "width": 80, // 宽度
+            //         "height": 170, // 高度
+            //         "hOffset": 0,
+            //         "vOffset": -20
+            //     },
+            //     "mobile": {
+            //         "show": false,
+            //         "scale": 2
+            //     },
+            //     "react": {
+            //         "opacityDefault": 1, // 透明度
+            //         "opacityOnHover": 0.2
+            //     }
+            // });
+            //
+            // window.onload = function () {
+            //     document.getElementById('live2dcanvas').style.border = "none";
+            // };
+
+            $('#newblog-container').load(/*[[@{/footer/newblog}]]*/"/footer/newblog");
+            /* 鼠标特效 */
+            var a_idx = 0;
+            jQuery(document).ready(function ($) {
+                $("body").click(function (e) {
+                    var a = new Array("❤富强❤", "❤民主❤", "❤文明❤", "❤和谐❤", "❤自由❤", "❤平等❤", "❤公正❤", "❤法治❤", "❤爱国❤", "❤敬业❤", "❤诚信❤", "❤友善❤");
+                    var $i = $("<span></span>").text(a[a_idx]);
+                    a_idx = (a_idx + 1) % a.length;
+                    var x = e.pageX,
+                        y = e.pageY;
+                    $i.css({
+                        "z-index": 99999999999999999,
+                        "top": y - 20,
+                        "left": x,
+                        "position": "absolute",
+                        "font-weight": "bold",
+                        "color": "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+                    });
+                    $("body").append($i);
+                    $i.animate({
+                            "top": y - 180,
+                            "opacity": 0
+                        },
+                        1500,
+                        function () {
+                            $i.remove();
+                        });
+                });
+            });
+            // 导航栏显示
+            var waypoint = new Waypoint({
+                element: document.getElementById('content-position'),
+                handler: function (direction) {
+                    if (direction == 'down') {
+                        $('#m-nav').show(400);
+                    } else {
+                        $('#m-nav').hide();
+                    }
+                }
+            })
+
+        </script>
+    </th:block>
+
+
+    </body>
+</html>
