@@ -59,11 +59,13 @@ public class AdminTagsController {
 
     @GetMapping("/tagsControl/delete")
     public String delete(Long id, RedirectAttributes redirectAttributes) {
-        if (blogService.hasUsedBytagId(id) == null) {
+        if (blogService.hasUsedBytagId(id).size() == 0) {
             tagService.deleteTag(id);
             redirectAttributes.addFlashAttribute("message", "恭喜，删除成功!");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "该标签已被使用，无法删除!");
         }
-        redirectAttributes.addFlashAttribute("message", "该标签已被使用，无法删除!");
+
         return "redirect:/admin/tagsControl";
     }
 

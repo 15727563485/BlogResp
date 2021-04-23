@@ -1,5 +1,6 @@
 package com.zhoupiyao.controller.admin;
 
+import com.zhoupiyao.po.Blog;
 import com.zhoupiyao.po.Type;
 import com.zhoupiyao.service.BlogService;
 import com.zhoupiyao.service.TypeService;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -59,11 +62,14 @@ public class AdminTypesController {
 
     @GetMapping("/typesControl/delete")
     public String delete(Long id, RedirectAttributes redirectAttributes) {
-        if (blogService.listBlogBytypeId(id) == null) {
+        List<Blog> b = blogService.listBlogBytypeId(id);
+        if (blogService.listBlogBytypeId(id).size() == 0) {
             typeService.deleteType(id);
             redirectAttributes.addFlashAttribute("message", "恭喜，删除成功!");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "该分类已被使用，无法删除!");
         }
-        redirectAttributes.addFlashAttribute("message", "该分类已被使用，无法删除!");
+
         return "redirect:/admin/typesControl";
     }
 
