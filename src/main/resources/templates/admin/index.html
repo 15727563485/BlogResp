@@ -56,9 +56,9 @@
             <div class="ui container">
                 <h1 class="ui center aligned orange header">欢迎你！<span th:text="${session.user.nickname}"></span>！</h1>
                 <div class="ui basic segment">
-                    <div class="ui rounded image" style="width: 100%" >
-                        <img src="http://www.zhoupiyao.ink:8089/img/wallpaper-one/wallhaven-oxjzv5.jpg"  alt="">
-
+                    <div class="ui rounded image">
+                        <img th:src="@{/images/owner.jpg}" alt="" style="width: 90%;"
+                             class="ui rounded image centered"/>
                     </div>
                 </div>
             </div>

@@ -40,10 +40,7 @@
             <!-- 左边内容 -->
             <div class="eleven wide column">
                 <div class="ui basic segment" style="padding-top: 0px;">
-                    <!-- <img src="https://unsplash.it/700/500?images=1001" alt="" class="ui top rounded image"> -->
-                    <img src="http://www.zhoupiyao.ink:8089/img/wallpaper-one/wallhaven-oxjzv5.jpg" alt=""
-                         class="ui top rounded image">
-
+                    <img th:src="@{/images/owner.jpg}" alt="" style="width: 100%;" class="ui rounded image centered"/>
                 </div>
             </div>
             <!-- 右边内容 -->
@@ -66,7 +63,7 @@
                            th:each="tag : ${tags}" th:href="@{/tags/{id}(id=${tag.id})}" th:text="${tag.name}">java</a>
                     </div>
                     <div class="ui center aligned attached bottom segment">
-                        <a href="#" class="ui center aligned circular button">
+                        <a href="https://github.com/Zhoupiyao" class="ui center aligned circular button">
                             <i class="github black icon" style="margin:auto"></i>
                         </a>
                         <a href="#" id="wechatIcon" class="ui circular button">
